@@ -1,12 +1,13 @@
 package main
 
 import (
+	"date-hub-api/googleapi"
+	"date-hub-api/server"
 	"encoding/json"
 	"fmt"
 	"log"
 	"net/http"
 	"os"
-	"vms/server"
 
 	_ "github.com/denisenkom/go-mssqldb"
 	"github.com/gorilla/handlers"
@@ -22,9 +23,10 @@ var EnvironmentVariables config
 func main() {
 
 	server := server.NewServer()
+	server.AddRoutes(googleapi.GetRoutes())
 
 	methods := handlers.AllowedMethods([]string{"GET", "PUT", "POST", "DELETE"})
-	headers := handlers.AllowedHeaders([]string{"Content-Type", "application/xml"})
+	headers := handlers.AllowedHeaders([]string{"Content-Type", "application/json"})
 	origins := handlers.AllowedOrigins([]string{
 		"http://localhost:8080",
 		"https://localhost:8080",

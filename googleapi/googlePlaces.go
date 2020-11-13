@@ -1,13 +1,38 @@
-package vcaas
+package googleapi
 
 import (
-	"date-hub/server"
+	"encoding/json"
+	"io/ioutil"
+	"net/http"
 )
 
-// GetRoutes ...
-func GetRoutes() []server.Route {
-	routes := []server.Route{
-		server.NewRoute("/", events, "POST"),
+func getMyIP(w http.ResponseWriter, r *http.Request) {
+
+	type response struct {
+		IPAddress string `json:"IPAddress"`
 	}
-	return routes
+
+	handler := func() *response {
+
+		var r *http.Response
+		var err error
+		if r, err = http.Get("http://icanhazip.com"); err != nil {
+			panic(err)
+		}
+
+		var res response
+		var ip []byte
+		ip, _ = ioutil.ReadAll(r.Body)
+		defer r.Body.Close()
+		res.IPAddress = string(ip)
+
+		return &res
+	}
+
+	resp := handler()
+
+	w.Header().Set("Content-Type", "application/json")
+	if err := json.NewEncoder(w).Encode(resp); err != nil {
+		panic(err)
+	}
 }
