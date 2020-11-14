@@ -40,7 +40,7 @@ func main() {
 		"https://date-hub-backend.herokuapp.com/",
 	})
 
-	EnvironmentVariables.Port = os.Getenv("Port")
+	EnvironmentVariables.Port = os.Getenv("PORT")
 	if EnvironmentVariables.Port == "" {
 		env, err := os.Open(".env")
 		if err != nil {
