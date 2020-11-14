@@ -1,7 +1,6 @@
 package register
 
 import (
-	"encoding/json"
 	"net/http"
 )
 
@@ -11,11 +10,11 @@ func login(w http.ResponseWriter, r *http.Request) {
 		Password  string `json:"password"`
 	}
 
-	handle := func(req request) {}
+	// handle := func(req request) {}
 
-	var err error
-	var req request
-	if err = json.NewDecoder(r.Body).Decode(handle(req)); err != nil {
-		http.Error(w, "")
-	}
+	// var err error
+	// var req request
+	// if err = json.NewDecoder(r.Body).Decode(handle(req)); err != nil {
+	// 	http.Error(w, "")
+	// }
 }
