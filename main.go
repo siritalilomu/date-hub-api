@@ -37,6 +37,7 @@ func main() {
 		"https://localhost:8080",
 		"https://localhost:8443",
 		"https://date-hub.herokuapp.com/",
+		"https://date-hub-backend.herokuapp.com/",
 	})
 
 	EnvironmentVariables.Port = os.Getenv("Port")

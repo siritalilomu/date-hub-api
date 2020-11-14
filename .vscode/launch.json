@@ -12,7 +12,9 @@
             "program": "${workspaceFolder}",
             "env": {
                 "Port": "8080",
-                
+                "DB_CONN": "server=wilsondynamics.westus.cloudapp.azure.com;port=1433;user id=WeBoostSvc;password=xut%hPJaGcM=5c5f;database=CodeCamp",
+                "GOOGLE_KEY": "AIzaSyBIUqp13yON-AoWZJcCex5f95MBfc9YeUA",
+                "ApiKey": "7abece61d8facc94c1b376cf3ee629cc"
             },
             "args": []
         }

@@ -44,13 +44,27 @@ func signup(w http.ResponseWriter, r *http.Request) {
 	sqlconn := sqlconn.Open()
 	defer sqlconn.Close()
 
-	if err := sqlconn.Exec("[spcCreateUser] ?, ?, ?, ?", user.Email, user.Name, user.Password, user.Photo); err != 0 {
-		http.Error(w, "error on creating user", http.StatusInternalServerError)
-		return
+	row := sqlconn.Query("Select UserEmail from dbo.Users where UserEmail = ?", user.Email)
+
+	var existingUser string
+	for row.Next() {
+		if err = row.Scan(&existingUser); err != nil {
+			http.Error(w, "error with checking user", http.StatusInternalServerError)
+		}
 	}
 
-	// send back an empty password
-	user.Password = ""
+	if existingUser == "" {
+		if err := sqlconn.Exec("[spcCreateUser] ?, ?, ?, ?", user.Email, user.Name, user.Password, user.Photo); err != 0 {
+			http.Error(w, "error on creating user", http.StatusInternalServerError)
+			return
+		}
+		// send back an empty password
+		user.Password = ""
 
-	helpers.ResponseJSON(w, user)
+		helpers.ResponseJSON(w, user)
+	} else {
+		existingUserMessage := "An Account Already Exist with this Email"
+		helpers.ResponseJSON(w, existingUserMessage)
+	}
+
 }
