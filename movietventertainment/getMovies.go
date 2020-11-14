@@ -13,6 +13,7 @@ type movies struct {
 		Popularity  float32 `json:"popularity"`
 		VoteCount   int32   `json:"vote_count"`
 		Video       bool    `json:"video"`
+		PosterPath  string  `json:"poster_path"`
 		ID          int     `json:"id"`
 		GenreIDs    []int   `json:"genre_ids"`
 		Title       string  `json:"title"`
@@ -28,8 +29,12 @@ type movies struct {
 
 func getMovie(w http.ResponseWriter, r *http.Request) {
 	var err error
+	var movies = getMovieHandler()
+	for _, v := range movies.Results {
+		fmt.Sprintf("http://image.tmdb.org/t/p/w500%v", v.PosterPath)
+	}
 	w.Header().Set("Content-Type", "application/json")
-	if err = json.NewEncoder(w).Encode(getMovieHandler()); err != nil {
+	if err = json.NewEncoder(w).Encode(movies); err != nil {
 		fmt.Println(err.Error())
 	}
 }
@@ -42,6 +47,7 @@ func getMovieHandler() movies {
 	if err = json.NewDecoder(movieList).Decode(&m); err != nil {
 		fmt.Println(err.Error())
 	}
+
 	if err = json.NewDecoder(movieGenres).Decode(&m); err != nil {
 		fmt.Println(err.Error())
 	}
