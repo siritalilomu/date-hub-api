@@ -1,6 +1,7 @@
 package main
 
 import (
+	"date-hub-api/dates"
 	"date-hub-api/googleapi"
 	"date-hub-api/movietventertainment"
 	"date-hub-api/register"
@@ -28,6 +29,7 @@ func main() {
 	server.AddRoutes(googleapi.GetRoutes())
 	server.AddRoutes(register.GetRoutes())
 	server.AddRoutes(movietventertainment.GetRoutes())
+	server.AddRoutes(dates.GetRoutes())
 
 	methods := handlers.AllowedMethods([]string{"GET", "PUT", "POST", "DELETE"})
 	headers := handlers.AllowedHeaders([]string{"Content-Type", "application/json"})

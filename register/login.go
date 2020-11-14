@@ -21,8 +21,6 @@ type response struct {
 	UserEmail   string    `json:"email"`
 	UserID      int       `json:"userId"`
 	PhotoBinary string    `json:"photoBinary"`
-	DateID      *int      `json:"dateId"`
-	Rating      *int      `json:"rating"`
 	Dates       *[]string `json:"dates"`
 }
 
@@ -63,8 +61,6 @@ func handleLogin(r *http.Request) (response, int) {
 		&u.UserEmail,
 		&u.UserID,
 		&u.PhotoBinary,
-		&u.DateID,
-		&u.Rating,
 		&u.Dates); err != nil {
 		log.Fatal(err)
 	}
