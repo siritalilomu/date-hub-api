@@ -103,3 +103,18 @@ func getFood(w http.ResponseWriter, r *http.Request) {
 		panic(err)
 	}
 }
+
+// amusement_park
+// aquarium
+// art_gallery
+// beauty_salon
+// bowling_alley
+// campground
+// casino
+// gym
+// movie_theater
+// museum
+// night_club
+// park
+// spa
+// zoo
