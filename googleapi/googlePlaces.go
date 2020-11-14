@@ -12,8 +12,9 @@ import (
 func getFood(w http.ResponseWriter, r *http.Request) {
 
 	type request struct {
-		Lat string `json:"lat"`
-		Lon string `json:"lon"`
+		Lat        string `json:"lat"`
+		Lon        string `json:"lon"`
+		FilterType string `json:"type"`
 	}
 
 	type response struct {
@@ -65,7 +66,7 @@ func getFood(w http.ResponseWriter, r *http.Request) {
 	}
 
 	handler := func(req request) *response {
-		URL := fmt.Sprintf(`https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=%s,%s&radius=8000&type=restaurant&key=%s`, req.Lat, req.Lon, os.Getenv("GOOGLE_KEY"))
+		URL := fmt.Sprintf(`https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=%s,%s&radius=8000&type=%s&key=%s`, req.Lat, req.Lon, req.FilterType, os.Getenv("GOOGLE_KEY"))
 
 		r, err := http.NewRequest("GET", URL, nil)
 		if err != nil {
