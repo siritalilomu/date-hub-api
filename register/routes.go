@@ -1,4 +1,4 @@
-package googleapi
+package register
 
 import (
 	"date-hub-api/server"
@@ -6,8 +6,10 @@ import (
 
 // GetRoutes ...
 func GetRoutes() []server.Route {
+
 	routes := []server.Route{
-		server.NewRoute("/get-food", getFood, "GET"),
+		server.NewRoute("/signup", signup, "POST"),
+		// server.NewRoute("/login", login, "POST"),
 	}
 	return routes
 }

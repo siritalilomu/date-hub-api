@@ -2,6 +2,7 @@ package main
 
 import (
 	"date-hub-api/googleapi"
+	"date-hub-api/register"
 	"date-hub-api/server"
 	"encoding/json"
 	"fmt"
@@ -24,6 +25,7 @@ func main() {
 
 	server := server.NewServer()
 	server.AddRoutes(googleapi.GetRoutes())
+	server.AddRoutes(register.GetRoutes())
 
 	methods := handlers.AllowedMethods([]string{"GET", "PUT", "POST", "DELETE"})
 	headers := handlers.AllowedHeaders([]string{"Content-Type", "application/json"})
