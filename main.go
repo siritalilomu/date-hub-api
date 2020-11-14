@@ -2,8 +2,8 @@ package main
 
 import (
 	"date-hub-api/googleapi"
-	"date-hub-api/register"
 	"date-hub-api/movietventertainment"
+	"date-hub-api/register"
 	"date-hub-api/server"
 	"encoding/json"
 	"fmt"
@@ -32,9 +32,11 @@ func main() {
 	methods := handlers.AllowedMethods([]string{"GET", "PUT", "POST", "DELETE"})
 	headers := handlers.AllowedHeaders([]string{"Content-Type", "application/json"})
 	origins := handlers.AllowedOrigins([]string{
+		"http://localhost:3000",
 		"http://localhost:8080",
 		"https://localhost:8080",
 		"https://localhost:8443",
+		"https://date-hub.herokuapp.com/",
 	})
 
 	EnvironmentVariables.Port = os.Getenv("Port")
