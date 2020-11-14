@@ -11,12 +11,11 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
-// User Model ...
 type user struct {
 	Email    string `json:"email"`
 	Name     string `json:"name"`
 	Password string `json:"password"`
-	Photo    []byte `json:"photo"`
+	Photo    string `json:"photo"`
 }
 
 // signup ...
@@ -44,7 +43,8 @@ func signup(w http.ResponseWriter, r *http.Request) {
 
 	sqlconn := sqlconn.Open()
 	defer sqlconn.Close()
-	if err := sqlconn.Exec("[spcCreateUser] ?, ?, ?, ?", user.Email, user.Name, user.Password, user.Photo); err == 0 {
+
+	if err := sqlconn.Exec("[spcCreateUser] ?, ?, ?, ?", user.Email, user.Name, user.Password, user.Photo); err != 0 {
 		http.Error(w, "error on creating user", http.StatusInternalServerError)
 		return
 	}
