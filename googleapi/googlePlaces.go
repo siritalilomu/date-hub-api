@@ -11,6 +11,32 @@ import (
 	"sync"
 )
 
+func getPhoto(ref string) (img string) {
+
+	URL := fmt.Sprintf(`https://maps.googleapis.com/maps/api/place/photo?maxwidth=1000&photoreference=%s&key=%s`, ref, os.Getenv("GOOGLE_KEY"))
+	r, err := http.NewRequest("GET", URL, nil)
+	if err != nil {
+		server.PanicWithStatus(err, http.StatusBadRequest)
+	}
+
+	client := &http.Client{}
+	resp, err := client.Do(r)
+	if err != nil {
+		server.PanicWithStatus(err, http.StatusBadRequest)
+	}
+	defer resp.Body.Close()
+
+	var resbody []byte
+	resbody, err = ioutil.ReadAll(resp.Body)
+	if err != nil {
+		panic(err)
+	}
+
+	rb := fmt.Sprintf(`%s`, string(resbody))
+
+	return rb
+}
+
 func getFood(w http.ResponseWriter, r *http.Request) {
 
 	type request struct {
@@ -33,6 +59,7 @@ func getFood(w http.ResponseWriter, r *http.Request) {
 				Height           int      `json:"height"`
 				HTMLAttributions []string `json:"html_attributions"`
 				PhotoReference   string   `json:"photo_reference"`
+				ImageUrl         string   `json:"imgUrl"`
 				Width            int      `json:"width"`
 			} `json:"photos"`
 			PlaceID          string  `json:"place_id"`
@@ -61,6 +88,10 @@ func getFood(w http.ResponseWriter, r *http.Request) {
 		var res response
 		if err = json.NewDecoder(resp.Body).Decode(&res); err != nil {
 			log.Println(err)
+		}
+
+		if len(res.Results[0].Photos[0].PhotoReference) > 10 {
+			res.Results[0].Photos[0].ImageUrl = getPhoto(res.Results[0].Photos[0].PhotoReference)
 		}
 
 		if resp.StatusCode > 204 {
@@ -161,10 +192,6 @@ func getActivity(w http.ResponseWriter, r *http.Request) {
 		return responses
 	}
 
-	// var req request
-	// if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
-	// 	log.Println(err)
-	// }
 	var req request = request{Lat: server.GetStringParam(r, "lat"), Lon: server.GetStringParam(r, "lon"), Type: server.GetStringParams(r, "type")}
 
 	res := handler(req)
