@@ -14,4 +14,8 @@ date-hub-api
 *.key
 *.pem
 __debug_bin
+<<<<<<< HEAD
 .vscode
+=======
+.vscode/launch.json
+>>>>>>> 0710dbd79fdd68155f75b0730af68639181a4497
