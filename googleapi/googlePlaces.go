@@ -21,51 +21,26 @@ func getFood(w http.ResponseWriter, r *http.Request) {
 	}
 
 	type response struct {
-		HTMLAttributions []interface{} `json:"html_attributions"`
-		NextPageToken    string        `json:"next_page_token"`
-		Results          []struct {
-			BusinessStatus string `json:"business_status"`
-			Geometry       struct {
+		Results []struct {
+			Geometry struct {
 				Location struct {
 					Lat float64 `json:"lat"`
 					Lng float64 `json:"lng"`
 				} `json:"location"`
-				Viewport struct {
-					Northeast struct {
-						Lat float64 `json:"lat"`
-						Lng float64 `json:"lng"`
-					} `json:"northeast"`
-					Southwest struct {
-						Lat float64 `json:"lat"`
-						Lng float64 `json:"lng"`
-					} `json:"southwest"`
-				} `json:"viewport"`
 			} `json:"geometry"`
-			Icon         string `json:"icon"`
-			Name         string `json:"name"`
-			OpeningHours struct {
-				OpenNow bool `json:"open_now"`
-			} `json:"opening_hours"`
+			Name   string `json:"name"`
 			Photos []struct {
 				Height           int      `json:"height"`
 				HTMLAttributions []string `json:"html_attributions"`
 				PhotoReference   string   `json:"photo_reference"`
 				Width            int      `json:"width"`
 			} `json:"photos"`
-			PlaceID  string `json:"place_id"`
-			PlusCode struct {
-				CompoundCode string `json:"compound_code"`
-				GlobalCode   string `json:"global_code"`
-			} `json:"plus_code"`
-			PriceLevel       int      `json:"price_level,omitempty"`
-			Rating           float64  `json:"rating"`
-			Reference        string   `json:"reference"`
-			Scope            string   `json:"scope"`
-			Types            []string `json:"types"`
-			UserRatingsTotal int      `json:"user_ratings_total"`
-			Vicinity         string   `json:"vicinity"`
+			PlaceID          string  `json:"place_id"`
+			Rating           float64 `json:"rating"`
+			Reference        string  `json:"reference"`
+			UserRatingsTotal int     `json:"user_ratings_total"`
+			Vicinity         string  `json:"vicinity"`
 		} `json:"results"`
-		Status string `json:"status"`
 	}
 
 	handler := func(req request) *response {
@@ -106,11 +81,11 @@ func getFood(w http.ResponseWriter, r *http.Request) {
 }
 
 func getActivity(w http.ResponseWriter, r *http.Request) {
-	fmt.Println("get activitiy")
+
 	type request struct {
-		Lat           string   `json:"lat"`
-		Lon           string   `json:"lon"`
-		ActivityTypes []string `json:"activityTypes"`
+		Lat  string
+		Lon  string
+		Type []string
 	}
 
 	type responsebody struct {
@@ -121,36 +96,18 @@ func getActivity(w http.ResponseWriter, r *http.Request) {
 					Lat float64 `json:"lat"`
 					Lng float64 `json:"lng"`
 				} `json:"location"`
-				Viewport struct {
-					Northeast struct {
-						Lat float64 `json:"lat"`
-						Lng float64 `json:"lng"`
-					} `json:"northeast"`
-					Southwest struct {
-						Lat float64 `json:"lat"`
-						Lng float64 `json:"lng"`
-					} `json:"southwest"`
-				} `json:"viewport"`
 			} `json:"geometry"`
-			Icon   string `json:"icon"`
 			Name   string `json:"name"`
 			Photos []struct {
 				Height           int      `json:"height"`
 				HTMLAttributions []string `json:"html_attributions"`
 				PhotoReference   string   `json:"photo_reference"`
 				Width            int      `json:"width"`
-			} `json:"photos,omitempty"`
-			PlaceID  string `json:"place_id"`
-			PlusCode struct {
-				CompoundCode string `json:"compound_code"`
-				GlobalCode   string `json:"global_code"`
-			} `json:"plus_code"`
-			Rating           float64  `json:"rating"`
-			Reference        string   `json:"reference"`
-			Scope            string   `json:"scope"`
-			Types            []string `json:"types"`
-			UserRatingsTotal int      `json:"user_ratings_total"`
-			Vicinity         string   `json:"vicinity"`
+			} `json:"photos"`
+			PlaceID          string  `json:"place_id"`
+			Rating           float64 `json:"rating"`
+			UserRatingsTotal int     `json:"user_ratings_total"`
+			Vicinity         string  `json:"vicinity"`
 		} `json:"results"`
 	}
 
@@ -162,11 +119,13 @@ func getActivity(w http.ResponseWriter, r *http.Request) {
 	}
 
 	handler := func(req request) []*responsebody {
+		fmt.Println(req)
 		var urls []string
-		for _, t := range req.ActivityTypes {
+		for _, t := range req.Type {
 			urls = append(urls, fmt.Sprintf(`https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=%s,%s&radius=8000&type=%s&key=%s`, req.Lat, req.Lon, t, os.Getenv("GOOGLE_KEY")))
 		}
 		var responses []*responsebody
+		fmt.Println(urls)
 		var wg sync.WaitGroup
 		for _, url := range urls {
 			wg.Add(1)
@@ -202,10 +161,12 @@ func getActivity(w http.ResponseWriter, r *http.Request) {
 		return responses
 	}
 
-	var req request
-	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
-		log.Println(err)
-	}
+	// var req request
+	// if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+	// 	log.Println(err)
+	// }
+	var req request = request{Lat: server.GetStringParam(r, "lat"), Lon: server.GetStringParam(r, "lon"), Type: server.GetStringParams(r, "type")}
+
 	res := handler(req)
 
 	w.Header().Set("Content-Type", "application/json")
