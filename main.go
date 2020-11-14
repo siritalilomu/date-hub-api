@@ -2,6 +2,7 @@ package main
 
 import (
 	"date-hub-api/googleapi"
+	"date-hub-api/movietventertainment"
 	"date-hub-api/server"
 	"encoding/json"
 	"fmt"
@@ -24,6 +25,7 @@ func main() {
 
 	server := server.NewServer()
 	server.AddRoutes(googleapi.GetRoutes())
+	server.AddRoutes(movietventertainment.GetRoutes())
 
 	methods := handlers.AllowedMethods([]string{"GET", "PUT", "POST", "DELETE"})
 	headers := handlers.AllowedHeaders([]string{"Content-Type", "application/json"})
@@ -33,7 +35,7 @@ func main() {
 		"https://localhost:8443",
 	})
 
-	EnvironmentVariables.Port = os.Getenv("PORT")
+	EnvironmentVariables.Port = os.Getenv("Port")
 	if EnvironmentVariables.Port == "" {
 		env, err := os.Open(".env")
 		if err != nil {
