@@ -12,18 +12,18 @@ import (
 )
 
 type request struct {
-	Useremail string `json:"useremail"`
+	Useremail string `json:"email"`
 	Password  string `json:"password"`
 }
 
 type response struct {
-	UserName    string
-	UserEmail   string
-	UserID      int
-	PhotoBinary string
-	DateID      *int
-	Rating      *int
-	Dates       *[]string
+	UserName    string    `json:"userName"`
+	UserEmail   string    `json:"email"`
+	UserID      int       `json:"userId"`
+	PhotoBinary string    `json:"photoBinary"`
+	DateID      *int      `json:"dateId"`
+	Rating      *int      `json:"rating"`
+	Dates       *[]string `json:"dates"`
 }
 
 func login(w http.ResponseWriter, r *http.Request) {
