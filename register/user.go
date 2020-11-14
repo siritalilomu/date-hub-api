@@ -63,8 +63,7 @@ func signup(w http.ResponseWriter, r *http.Request) {
 
 		helpers.ResponseJSON(w, user)
 	} else {
-		existingUserMessage := "An Account Already Exist with this Email"
-		helpers.ResponseJSON(w, existingUserMessage)
+		http.Error(w, "An Account Already Exist with this Email", 409)
 	}
 
 }
