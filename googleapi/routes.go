@@ -7,7 +7,7 @@ import (
 // GetRoutes ...
 func GetRoutes() []server.Route {
 	routes := []server.Route{
-		server.NewRoute("/get-food", getFood, "GET"),
+		server.NewRoute("/get-activity", getFood, "GET"),
 	}
 	return routes
 }

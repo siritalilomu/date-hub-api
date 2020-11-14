@@ -12,9 +12,10 @@ import (
 func getFood(w http.ResponseWriter, r *http.Request) {
 
 	type request struct {
-		Lat        string `json:"lat"`
-		Lon        string `json:"lon"`
-		FilterType string `json:"type"`
+		Lat     string
+		Lon     string
+		Type    string
+		Keyword string
 	}
 
 	type response struct {
@@ -66,7 +67,7 @@ func getFood(w http.ResponseWriter, r *http.Request) {
 	}
 
 	handler := func(req request) *response {
-		URL := fmt.Sprintf(`https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=%s,%s&radius=8000&type=%s&key=%s`, req.Lat, req.Lon, req.FilterType, os.Getenv("GOOGLE_KEY"))
+		URL := fmt.Sprintf(`https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=%s,%s&radius=8000&type=%s&keyword=%s&key=%s`, req.Lat, req.Lon, req.Type, req.Keyword, os.Getenv("GOOGLE_KEY"))
 
 		r, err := http.NewRequest("GET", URL, nil)
 		if err != nil {
@@ -92,10 +93,7 @@ func getFood(w http.ResponseWriter, r *http.Request) {
 		return &res
 	}
 
-	var req request
-	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
-		log.Println(err)
-	}
+	var req request = request{Lat: server.GetStringParam(r, "lat"), Lon: server.GetStringParam(r, "lon"), Type: server.GetStringParam(r, "type"), Keyword: server.GetStringParam(r, "keyword", true)}
 
 	res := handler(req)
 
